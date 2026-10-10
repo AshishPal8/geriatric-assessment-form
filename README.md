@@ -43,8 +43,6 @@ src/App.tsx                 Renders the form with a fake 800ms save
 
 ## Time spent
 
-## Time spent
-
 About 1.5 hours, including setup and deployment.
 
 ## Not done / next steps
