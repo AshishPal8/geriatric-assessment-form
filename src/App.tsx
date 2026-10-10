@@ -1,13 +1,16 @@
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 
 import { MantineProvider } from '@mantine/core';
-import { Router } from './Router';
+import { AssessmentForm } from './features/assessment/AssessmentForm';
 import { theme } from './theme';
+
+const fakeSave = () => new Promise<void>((resolve) => setTimeout(resolve, 800));
 
 export default function App() {
   return (
     <MantineProvider theme={theme}>
-      <Router />
+      <AssessmentForm onSave={fakeSave} />
     </MantineProvider>
   );
 }

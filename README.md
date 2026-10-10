@@ -1,44 +1,52 @@
-# Mantine Vite template
+# Geriatric Care Assessment Form
 
-## Features
+A one-page form a visiting nurse fills in when checking on an elderly patient at home.
+Built with React 19, TypeScript, Mantine, `@mantine/form` and Zod 4.
 
-This template comes with the following features:
+**Live demo:** 
 
-- [PostCSS](https://postcss.org/) with [mantine-postcss-preset](https://mantine.dev/styles/postcss-preset)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Storybook](https://storybook.js.org/)
-- [Vitest](https://vitest.dev/) setup with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
-- [Vite+](https://viteplus.dev/) unified toolchain: Vite, Vitest, Oxlint and Oxfmt are run with `vp` and configured in `vite.config.mjs`
+All patient data in this repo is invented.
 
-## Vite+ CLI
+## Running it
 
-The template works without any global installation: `vp` is installed as a dev dependency and all npm scripts use it.
+Requires Node 24 and Yarn 4 (via Corepack).
 
-Optionally, you can install the [global `vp` CLI](https://viteplus.dev/guide/global-cli).
-It automatically switches to the Node.js version pinned in `.node-version` and lets you run commands directly, for example `vp dev` or `vp check --fix` instead of `yarn vp check --fix`.
+```bash
+corepack enable
+yarn install
+yarn dev      # http://localhost:5173
+yarn test     # format, lint, typecheck, tests and build
+yarn vitest   # tests only
+```
 
-## npm scripts
+## Where things are
 
-## Build and dev scripts
+```
+src/features/assessment/
+  schema.ts                 Zod schema from the brief (unchanged rules and messages)
+  sampleAssessment.ts       Valid fixture used by "Load sample patient" and the tests
+  AssessmentForm.tsx        The form
+  schema.test.ts            Age boundary: exactly 60 vs one day short
+  AssessmentForm.test.tsx   Load sample, submit, save handler gets the parsed values
+src/App.tsx                 Renders the form with a fake 800ms save
+```
 
-- `dev` – start development server
-- `build` – build production version of the app
-- `build:analyze` – build the app and open bundle size visualization (`dist/stats.html`)
-- `preview` – locally preview production build
+## Decisions
 
-### Testing scripts
+- **Form values vs `Assessment`.** Empty inputs do not fit `Assessment` (a blank `NumberInput` is `''`, a blank `Select` or `DateInput` is `null`, consent starts as `false`). `AssessmentFormValues` is a mapped type derived from `Assessment`, so there is no second hand-written interface and it follows the schema if fields change.
+- **Parsed output.** `schemaResolver` only returns errors, so `transformValues` runs `assessmentSchema.parse`. Mantine calls it only after validation passes, so the submit handler receives the Zod output (for example trimmed strings), typed as `Assessment`.
+- **No clamping.** Both `NumberInput`s use `clampBehavior="none"`, so a typed 105 stays 105 and the schema rejects it instead of the input silently changing it.
+- **Cross-field errors.** In Zod 4 the `.refine()` checks only run once the field-level checks pass. A blank form shows exactly 9 "required" errors; the age, review date and polypharmacy errors show after the rest of the form is valid.
+- **Consent checkbox.** The label is "Consent" with "Patient or representative has given consent" as its description, so both texts from the brief are shown.
+- **Mobility labels** are generated from `MOBILITY` (`home_visit` becomes "Home visit"), so adding a value to the array is the only edit needed.
+- **Template cleanup.** Removed the router, demo page and demo components (routing is out of scope). With the demo CSS gone there are no `.css` files left, so the `stylelint` script has `--allow-empty-input`; the stylelint config itself is unchanged.
 
-- `check` – checks formatting, lint rules and TypeScript types with `vp check`
-- `check:fix` – same as `check`, fixes formatting and auto-fixable lint errors
-- `typecheck` – checks TypeScript types
-- `lint` – runs oxlint and stylelint
-- `format:test` – checks files with oxfmt
-- `vitest` – runs vitest tests
-- `vitest:watch` – starts vitest watch
-- `test` – runs `check`, `stylelint`, `vitest` and `build` scripts
+## Time spent
 
-### Other scripts
+## Time spent
 
-- `storybook` – starts storybook dev server
-- `storybook:build` – build production storybook bundle to `storybook-static`
-- `format:write` – formats all files with oxfmt
+About 1.5 hours, including setup and deployment.
+
+## Not done / next steps
+
+
