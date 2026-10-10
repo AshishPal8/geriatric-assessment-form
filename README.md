@@ -3,13 +3,13 @@
 A one-page form a visiting nurse fills in when checking on an elderly patient at home.
 Built with React 19, TypeScript, Mantine, `@mantine/form` and Zod 4.
 
-**Live demo:** 
+**Live demo:** https://geriatric-assessment-form-e4f7-seven.vercel.app
 
 All patient data in this repo is invented.
 
 ## Running it
 
-Requires Node 24 and Yarn 4 (via Corepack).
+Requires Node 24. Yarn 4 is committed in `.yarn/releases`, so any `yarn` on your machine will use it.
 
 ```bash
 corepack enable
@@ -40,6 +40,7 @@ src/App.tsx                 Renders the form with a fake 800ms save
 - **Consent checkbox.** The label is "Consent" with "Patient or representative has given consent" as its description, so both texts from the brief are shown.
 - **Mobility labels** are generated from `MOBILITY` (`home_visit` becomes "Home visit"), so adding a value to the array is the only edit needed.
 - **Template cleanup.** Removed the router, demo page and demo components (routing is out of scope). With the demo CSS gone there are no `.css` files left, so the `stylelint` script has `--allow-empty-input`; the stylelint config itself is unchanged.
+- **Committed Yarn release.** Vercel failed with "Dynamic require of util" when Corepack downloaded Yarn into a `"type": "module"` project. `.yarn/releases/yarn-4.18.1.cjs` with `yarnPath`, plus `vercel.json` running that file directly, avoids Corepack on Vercel without changing the template's module settings.
 
 ## Time spent
 
@@ -47,4 +48,9 @@ About 1.5 hours, including setup and deployment.
 
 ## Not done / next steps
 
+Everything in the brief is done.
 
+If I had more time, I would:
+
+- Show an error message if the save fails. Right now the save is fake and always works.
+- Add more tests, for example one for each case in the fixture table from the brief.
